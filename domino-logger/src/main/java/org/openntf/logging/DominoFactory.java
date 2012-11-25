@@ -51,7 +51,6 @@ public class DominoFactory extends LogFactory implements ResourceHandler {
 			Class<?> c = Class.forName(name);
 			return getInstance(c);
 		} catch (ClassNotFoundException e) {
-			System.out.println("class " + name + " not found");
 			SimpleLog logger = new SimpleLog(name);
 			logger.setLevel(SimpleLog.LOG_LEVEL_OFF);
 			return logger;

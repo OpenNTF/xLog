@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.impl.SimpleLog;
+import org.openntf.logging.config.SystemConfiguration;
 import org.openntf.logging.entity.LogEntry;
 import org.openntf.utils.JSFUtils;
 import org.openntf.utils.UniqueThreadIdGenerator;
@@ -23,11 +26,14 @@ public class LogBuffer implements Observer {
 	private Map<String, List<LogEntry>> logEntries = Collections.synchronizedMap(new HashMap<String, List<LogEntry>>());
 	private Multimap<String, List<LogEntry>> queue;
 	private Map<Integer, String> classNames = Collections.synchronizedMap(new HashMap<Integer, String>());
+	private Log logger;
 	
 	public LogBuffer() {
 		Multimap<String, List<LogEntry>> tmp = HashMultimap.create();
-		
 		this.queue = Multimaps.synchronizedMultimap(tmp);
+		SimpleLog log = new SimpleLog(LogBuffer.class.getName());
+		log.setLevel(SystemConfiguration.isDiagnostic() ? SimpleLog.LOG_LEVEL_ALL : SimpleLog.LOG_LEVEL_ERROR);
+		this.logger = log;
 	}
 	
 	@Override
@@ -66,7 +72,7 @@ public class LogBuffer implements Observer {
 				
 				queue.put(fullName, logEntries.remove(currentId));
 			} catch (IllegalStateException e) {
-				System.out.println("Failed to add log entries to queue, no log document will be created.");
+				logger.error("Failed to add log entries to queue, no log document will be created.");
 			}
 		}
 	}

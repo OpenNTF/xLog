@@ -9,10 +9,10 @@ import lotus.domino.Database;
 import lotus.domino.Session;
 
 
-public class SystemOutImpl extends LoggerDAO {
+public class ConsoleLogger extends LoggerDAO {
 
 
-	public SystemOutImpl(Session session, Database dbCurrent,
+	public ConsoleLogger(Session session, Database dbCurrent,
 			Database dbLogger) {
 		super(session, dbCurrent, dbLogger);
 	}

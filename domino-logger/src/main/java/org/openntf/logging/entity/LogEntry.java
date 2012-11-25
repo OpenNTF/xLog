@@ -2,7 +2,12 @@ package org.openntf.logging.entity;
 
 import org.openntf.logging.config.LogLevel;
 
-
+/**
+ * Represents a log entry
+ * 
+ * @author Olle Thalén
+ *
+ */
 public class LogEntry {
 	private String logEntry;
 	private LogLevel level;

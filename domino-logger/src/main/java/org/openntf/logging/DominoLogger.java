@@ -15,14 +15,21 @@ import lotus.domino.View;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.impl.SimpleLog;
 import org.openntf.logging.config.LogLevel;
+import org.openntf.logging.config.SystemConfiguration;
 import org.openntf.logging.entity.LogEntry;
 import org.openntf.logging.events.ApplicationScopeListener;
 import org.openntf.utils.DominoProvider;
 import org.openntf.utils.JSFUtils;
 import org.openntf.utils.UniqueThreadIdGenerator;
 
-
+/**
+ * Log implementation which creates log entries and sends them to its Observer.
+ * 
+ * @author Olle Thalén
+ *
+ */
 public class DominoLogger extends Observable implements Log, ApplicationScopeListener {
 	
 	private Map<Integer, String> entryPoints = Collections.synchronizedMap(new HashMap<Integer, String>());
@@ -32,16 +39,21 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 	private final static String DOT = ".";
 	private final static String LEFT = "(";
 	private final static String RIGHT = ")";
+	private Log logger;
 	
 	public DominoLogger(DominoProvider provider, Observer o) {
+		SimpleLog log = new SimpleLog(DominoLogger.class.getName());
+		log.setLevel(SystemConfiguration.isDiagnostic() ? SimpleLog.LOG_LEVEL_ALL : SimpleLog.LOG_LEVEL_ERROR);
+		this.logger = log;
 		this.provider = provider;
 		addObserver(o);
+		this.checkLogLevel();
 	}
 	
 	private void addLogEntry(Object message, LogLevel level, Throwable t) {
 		int id = UniqueThreadIdGenerator.getCurrentThreadId();
-		System.out.println("transaction id used when adding a log message: " + id);
-		System.out.println("thread used when adding a log entry: " + Thread.currentThread().getId());
+		logger.debug("transaction id used when adding a log message: " + id);
+		logger.debug("thread used when adding a log entry: " + Thread.currentThread().getId());
 		
 		boolean newDocument = flags.containsKey(id) ? flags.get(id) : true;
 		
@@ -108,39 +120,42 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 	
 	@Override
 	public boolean isDebugEnabled() {
+		//checkLogLevel();
 		return logLevel == null ? false : LogLevel.DEBUG.getValue() >= logLevel.getValue();
 	}
 
 	@Override
 	public boolean isErrorEnabled() {
+		//checkLogLevel();
 		return logLevel == null ? false : LogLevel.ERROR.getValue() >= logLevel.getValue();
 	}
 
 	@Override
 	public boolean isFatalEnabled() {
+		//checkLogLevel();
 		return logLevel == null ? false : LogLevel.FATAL.getValue() >= logLevel.getValue();
 	}
 
 	@Override
 	public boolean isInfoEnabled() {
+		//checkLogLevel();
 		return logLevel == null ? false : LogLevel.INFO.getValue() >= logLevel.getValue();
 	}
 
 	@Override
 	public boolean isTraceEnabled() {
+		//checkLogLevel();
 		return logLevel == null ? false : LogLevel.TRACE.getValue() >= logLevel.getValue();
 	}
 
 	@Override
 	public boolean isWarnEnabled() {
+		//checkLogLevel();
 		return logLevel == null ? false : LogLevel.WARN.getValue() >= logLevel.getValue();
 	}
 
 	@Override
 	public void trace(Object message) {
-		if (this.logLevel == null) {
-			configDatabaseLogLevel();
-		}
 		if (isTraceEnabled()) {
 			addLogEntry(message, LogLevel.TRACE, null);
 		}
@@ -148,16 +163,18 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 
 	@Override
 	public void trace(Object message, Throwable t) {
-		if (this.logLevel == null) {
-			configDatabaseLogLevel();
-		}
 		if (isTraceEnabled()) {
 			addLogEntry(message, LogLevel.TRACE, t);
 		}
 	}
 
 	private void configDatabaseLogLevel() {
-		Database db = provider == null ? JSFUtils.getCurrentDatabase() : provider.getCurrentDatabase();
+		Database db = null;
+		try {
+			db = provider == null ? JSFUtils.getCurrentDatabase() : provider.getCurrentDatabase();
+		} catch (NullPointerException e) {
+			return;
+		}
 		View view;
 		try {
 			view = db.getView("allByForm.LU");
@@ -172,9 +189,6 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 	
 	@Override
 	public void debug(Object message) {
-		if (this.logLevel == null) {
-			configDatabaseLogLevel();
-		}
 		if (isDebugEnabled()) {
 			addLogEntry(message, LogLevel.DEBUG, null);
 		}
@@ -182,19 +196,25 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 
 	@Override
 	public void debug(Object message, Throwable t) {
-		if (this.logLevel == null) {
-			configDatabaseLogLevel();
-		}
 		if (isDebugEnabled()) {
 			addLogEntry(message, LogLevel.DEBUG, t);
 		}
 	}
 
+	/*
+	 * Make this check and set operation synchronized, enough that one thread sets the logLevel.
+	 */
+	private void checkLogLevel() {
+		logger.debug("calling checkLogLevel");
+		synchronized(this) {
+			if (this.logLevel == null) {
+				configDatabaseLogLevel();
+			}
+		}
+	}
+	
 	@Override
 	public void info(Object message) {
-		if (this.logLevel == null) {
-			configDatabaseLogLevel();
-		}
 		if (isInfoEnabled()) {
 			addLogEntry(message, LogLevel.INFO, null);
 		}
@@ -202,9 +222,6 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 
 	@Override
 	public void info(Object message, Throwable t) {
-		if (this.logLevel == null) {
-			configDatabaseLogLevel();
-		}
 		if (isInfoEnabled()) {
 			addLogEntry(message, LogLevel.INFO, t);
 		}
@@ -212,9 +229,6 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 
 	@Override
 	public void warn(Object message) {
-		if (this.logLevel == null) {
-			configDatabaseLogLevel();
-		}
 		if (isWarnEnabled()) {
 			addLogEntry(message, LogLevel.WARN, null);
 		}
@@ -223,9 +237,6 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 
 	@Override
 	public void warn(Object message, Throwable t) {
-		if (this.logLevel == null) {
-			configDatabaseLogLevel();
-		}
 		if (isWarnEnabled()) {
 			addLogEntry(message, LogLevel.WARN, t);
 		}
@@ -233,9 +244,6 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 
 	@Override
 	public void error(Object message) {
-		if (this.logLevel == null) {
-			configDatabaseLogLevel();
-		}
 		if (isErrorEnabled()) {
 			addLogEntry(message, LogLevel.ERROR, null);
 		}
@@ -243,9 +251,6 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 
 	@Override
 	public void error(Object message, Throwable t) {
-		if (this.logLevel == null) {
-			configDatabaseLogLevel();
-		}
 		if (isErrorEnabled()) {
 			addLogEntry(message, LogLevel.ERROR, t);
 		}		
@@ -253,9 +258,6 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 
 	@Override
 	public void fatal(Object message) {
-		if (this.logLevel == null) {
-			configDatabaseLogLevel();
-		}
 		if (isFatalEnabled()) {
 			addLogEntry(message, LogLevel.FATAL, null);
 		}
@@ -264,9 +266,6 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 
 	@Override
 	public void fatal(Object message, Throwable t) {
-		if (this.logLevel == null) {
-			configDatabaseLogLevel();
-		}
 		if (isFatalEnabled()) {
 			addLogEntry(message, LogLevel.FATAL, null);
 		}

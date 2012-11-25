@@ -16,8 +16,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openntf.logging.LogBuffer;
 import org.openntf.logging.entity.LogEntry;
 
-
-
 public class LoggerDAOImpl extends LoggerDAO {
 
 	public LoggerDAOImpl(Session session, Database dbCurrent, Database dbLogger) {
@@ -26,14 +24,14 @@ public class LoggerDAOImpl extends LoggerDAO {
 	
 	@Override
 	public void createLogDocument(List<LogEntry> logEntries, String userName) {
-		System.out.println("creating a new log document (thread: " + Thread.currentThread().getId() + ")");
+		logger.debug("creating a new log document (thread: " + Thread.currentThread().getId() + ")");
 		 
 		Document logDoc;
 		try {
 			logDoc = dbLogger.createDocument();
 			logDoc.replaceItemValue("Form", "LogEntry");
 			
-			System.out.println("Username: " + userName);
+			logger.debug("Username: " + userName);
 			switch (dbCurrent.queryAccess(userName)) {
 			case ACL.LEVEL_AUTHOR:
 				logDoc.replaceItemValue("AccessLevel", "Author");

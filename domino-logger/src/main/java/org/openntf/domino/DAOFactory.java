@@ -12,9 +12,11 @@ import lotus.domino.Session;
 import lotus.domino.View;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.impl.SimpleLog;
+import org.openntf.domino.logger.ConsoleLogger;
 import org.openntf.domino.logger.LoggerDAO;
-import org.openntf.domino.logger.LoggerDAOImpl;
-import org.openntf.logging.scheduler.Scheduler;
+import org.openntf.logging.config.SystemConfiguration;
 
 
 public class DAOFactory {
@@ -22,10 +24,14 @@ public class DAOFactory {
 	private Session session;
 	private Database dbLogger;
 	private String dbPath;
+	private Log logger;
 	
 	public DAOFactory(Session session, String dbPath) {
 		this.session = session;
 		this.dbPath = dbPath;
+		SimpleLog log = new SimpleLog(DAOFactory.class.getName());
+		log.setLevel(SystemConfiguration.isDiagnostic() ? SimpleLog.LOG_LEVEL_ALL : SimpleLog.LOG_LEVEL_ERROR);
+		this.logger = log;
 	}
 
 	public void recycle() {
@@ -42,7 +48,7 @@ public class DAOFactory {
 	public List<LoggerDAO> getLoggerDAO() {
 		List<String> classNames = null;
 		try {
-			classNames = Scheduler.getImplementations();
+			classNames = SystemConfiguration.getImplementations();
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
@@ -60,16 +66,16 @@ public class DAOFactory {
 			Database dbLog = directory.openDatabaseByReplicaID(replicaId);
 			this.dbLogger = dbLog;
 			
-			System.out.println("db path: " + dbLog.getFilePath());
+			logger.debug("db path: " + dbLog.getFilePath());
 			if (!dbLog.isOpen()) {
 				dbLog.open();
 			}
-			System.out.println("is database open: " + dbLog.isOpen());
+			logger.debug("is database open: " + dbLog.isOpen());
 			doc.recycle();
 
 			ArrayList<LoggerDAO> daos = new ArrayList<LoggerDAO>();
 			for (String className : classNames) {
-				System.out.println("classname: " + className);
+				logger.debug("classname: " + className);
 				Class<?> c = null;
 				try {
 					c = Class.forName(className);
@@ -90,7 +96,7 @@ public class DAOFactory {
 				daos.add((LoggerDAO) instance);
 			}
 			if (daos.isEmpty()) {
-				daos.add(new LoggerDAOImpl(session, db, dbLog));
+				daos.add(new ConsoleLogger(session, db, dbLog));
 			}
 			return daos;
 		} catch (Throwable t) {

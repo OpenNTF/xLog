@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.openntf.logging.scheduler.Scheduler;
+import org.openntf.logging.config.SystemConfiguration;
 
 import com.ibm.xsp.application.ApplicationEx;
 import com.ibm.xsp.application.events.ApplicationListener;
@@ -38,7 +38,11 @@ public class InitializationListener implements ApplicationListener {
 							appenderName = appenderName.substring(0, appenderName.length()-1) + i;
 						}
 						
-						Scheduler.setImplementations(classNames);
+						SystemConfiguration.setImplementations(classNames);
+						if (props.containsKey("config.diagnostic")) {
+							Boolean diag = Boolean.valueOf(props.get("config.diagnostic").toString());
+							SystemConfiguration.setDiagnositc(diag);
+						}
 					} else {
 						System.out.println("Couldn't find property file logging-appenders.properties");
 					}

@@ -77,7 +77,7 @@ public class DominoLoggerTest {
 	@Test
 	public void testLogMessageContains() throws Exception {
 		Log logger = LogFactory.getLog(DominoLoggerTest.class);
-		logger.debug("hej");
+		logger.debug("hello");
 		LogBuffer buf = (LogBuffer) LogFactory.getFactory().getAttribute("buffer");
 		buf.saveLogDocument();
 		

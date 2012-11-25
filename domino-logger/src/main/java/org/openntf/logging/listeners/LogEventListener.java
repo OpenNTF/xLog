@@ -14,7 +14,6 @@ import org.openntf.logging.scheduler.Scheduler;
 import org.openntf.utils.ApplicationScopeUtils;
 import org.openntf.utils.JSFUtils;
 
-
 public class LogEventListener implements PhaseListener {
 
 	/**
@@ -26,10 +25,10 @@ public class LogEventListener implements PhaseListener {
 		try {
 			if (event.getPhaseId() == PhaseId.RENDER_RESPONSE) {
 				ApplicationScopeUtils.checkAndSet();
-				
+
 				LogFactory fac = LogFactory.getFactory();
 				if (fac instanceof ResourceHandler) {
-					((ResourceHandler)fac).commit();
+					((ResourceHandler) fac).commit();
 				}
 				LogBuffer buf = (LogBuffer) fac.getAttribute("buffer");
 				/*
@@ -51,7 +50,8 @@ public class LogEventListener implements PhaseListener {
 							Scheduler.waitAndStart(delay);
 						}
 					} else {
-						LoggerService.processBuffer(JSFUtils.getCurrentSession());
+						LoggerService.processBuffer(JSFUtils
+								.getCurrentSession());
 					}
 				}
 			}
