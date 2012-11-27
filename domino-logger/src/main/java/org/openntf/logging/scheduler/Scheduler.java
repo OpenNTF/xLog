@@ -33,6 +33,12 @@ import com.google.common.collect.Multimap;
 import com.ibm.domino.xsp.module.nsf.ThreadSessionExecutor;
 import com.ibm.xsp.designer.context.ServletXSPContext;
 
+/**
+ * Responsible for starting a new thread.
+ * 
+ * @author Olle Thalén
+ *
+ */
 public class Scheduler {
 
 	private static Log logger = null;

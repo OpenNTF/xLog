@@ -120,37 +120,31 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 	
 	@Override
 	public boolean isDebugEnabled() {
-		//checkLogLevel();
 		return logLevel == null ? false : LogLevel.DEBUG.getValue() >= logLevel.getValue();
 	}
 
 	@Override
 	public boolean isErrorEnabled() {
-		//checkLogLevel();
 		return logLevel == null ? false : LogLevel.ERROR.getValue() >= logLevel.getValue();
 	}
 
 	@Override
 	public boolean isFatalEnabled() {
-		//checkLogLevel();
 		return logLevel == null ? false : LogLevel.FATAL.getValue() >= logLevel.getValue();
 	}
 
 	@Override
 	public boolean isInfoEnabled() {
-		//checkLogLevel();
 		return logLevel == null ? false : LogLevel.INFO.getValue() >= logLevel.getValue();
 	}
 
 	@Override
 	public boolean isTraceEnabled() {
-		//checkLogLevel();
 		return logLevel == null ? false : LogLevel.TRACE.getValue() >= logLevel.getValue();
 	}
 
 	@Override
 	public boolean isWarnEnabled() {
-		//checkLogLevel();
 		return logLevel == null ? false : LogLevel.WARN.getValue() >= logLevel.getValue();
 	}
 

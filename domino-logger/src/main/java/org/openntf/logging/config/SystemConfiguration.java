@@ -3,6 +3,12 @@ package org.openntf.logging.config;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Keep track of the system configuration
+ * 
+ * @author Olle Thalén
+ *
+ */
 public class SystemConfiguration {
 	
 	public static void setImplementations(List<String> implementations) {

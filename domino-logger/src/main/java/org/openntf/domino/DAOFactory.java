@@ -18,7 +18,12 @@ import org.openntf.domino.logger.ConsoleLogger;
 import org.openntf.domino.logger.LoggerDAO;
 import org.openntf.logging.config.SystemConfiguration;
 
-
+/**
+ * Factory class used to get all dao instances when log appenders are to be invoked.
+ * 
+ * @author Olle Thalén
+ *
+ */
 public class DAOFactory {
 
 	private Session session;

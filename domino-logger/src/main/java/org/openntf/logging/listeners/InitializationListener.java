@@ -12,6 +12,13 @@ import org.openntf.logging.config.SystemConfiguration;
 import com.ibm.xsp.application.ApplicationEx;
 import com.ibm.xsp.application.events.ApplicationListener;
 
+/**
+ * Application listener which loads the property file logging-appenders.properties
+ * and updates system configuration
+ * 
+ * @author Olle Thalén
+ *
+ */
 public class InitializationListener implements ApplicationListener {
 
 	public void applicationCreated(ApplicationEx arg0) {

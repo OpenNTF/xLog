@@ -16,6 +16,14 @@ import org.apache.commons.logging.LogFactory;
 import org.openntf.logging.LogBuffer;
 import org.openntf.logging.entity.LogEntry;
 
+/**
+ * The application log implementation <br/>
+ * This class logs to a lotus notes database where all log entries are added to one document,
+ * stack traces are also included in a log document.
+ * 
+ * @author Olle Thalén
+ *
+ */
 public class LoggerDAOImpl extends LoggerDAO {
 
 	public LoggerDAOImpl(Session session, Database dbCurrent, Database dbLogger) {

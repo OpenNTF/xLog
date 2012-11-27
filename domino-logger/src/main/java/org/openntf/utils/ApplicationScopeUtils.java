@@ -6,6 +6,11 @@ import lotus.domino.Document;
 import lotus.domino.NotesException;
 import lotus.domino.View;
 
+/**
+ * 
+ * @author Olle Thalén
+ *
+ */
 public class ApplicationScopeUtils {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

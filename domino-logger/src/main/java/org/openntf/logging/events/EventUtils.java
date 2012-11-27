@@ -5,6 +5,12 @@ import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Utility class
+ * 
+ * @author Olle Thalén
+ *
+ */
 public class EventUtils {
 
 	public static List<ApplicationScopeListener> getListeners() {

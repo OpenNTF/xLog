@@ -20,7 +20,14 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.ibm.xsp.designer.context.ServletXSPContext;
 
-
+/**
+ * This class stores the log data. <br/>
+ * Each logger object created registers an instance of this class as an Observer, so when
+ * new log messages are available this class will be notified and can append the logentry in the logEntries map.
+ * 
+ * @author Olle Thalén
+ *
+ */
 public class LogBuffer implements Observer {
 
 	private Map<String, List<LogEntry>> logEntries = Collections.synchronizedMap(new HashMap<String, List<LogEntry>>());
@@ -30,6 +37,7 @@ public class LogBuffer implements Observer {
 	
 	public LogBuffer() {
 		Multimap<String, List<LogEntry>> tmp = HashMultimap.create();
+		//use a synchronized multimap so we can buffer log entries from the same user if needed
 		this.queue = Multimaps.synchronizedMultimap(tmp);
 		SimpleLog log = new SimpleLog(LogBuffer.class.getName());
 		log.setLevel(SystemConfiguration.isDiagnostic() ? SimpleLog.LOG_LEVEL_ALL : SimpleLog.LOG_LEVEL_ERROR);
@@ -48,6 +56,7 @@ public class LogBuffer implements Observer {
 		classNames.remove(list.hashCode());
 		list.add(logentry);
 		String name = ((DominoLogger)o).getEntryPoints().get(Integer.parseInt(currentId));
+		//get the entry point so log appenders can keep track of where the logging started
 		classNames.put(list.hashCode(), name);
 	}
 	

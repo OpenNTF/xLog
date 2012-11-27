@@ -13,6 +13,12 @@ import org.apache.commons.lang.StringUtils;
 
 import com.ibm.xsp.designer.context.ServletXSPContext;
 
+/**
+ * Utility-class for getting JSF variables
+ * 
+ * @author Olle Thalén
+ *
+ */
 public class JSFUtils {
 	@SuppressWarnings("deprecation")
 	public static Object getVariable(String name) {

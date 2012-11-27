@@ -15,7 +15,12 @@ import org.openntf.utils.JSFUtils;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
-
+/**
+ * Used when synchronous logging is set
+ * 
+ * @author Olle Thalén
+ *
+ */
 public abstract class LoggerService {
 	
 	/**

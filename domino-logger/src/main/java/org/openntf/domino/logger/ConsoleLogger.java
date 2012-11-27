@@ -8,7 +8,12 @@ import org.openntf.logging.entity.LogEntry;
 import lotus.domino.Database;
 import lotus.domino.Session;
 
-
+/**
+ * Log appender which logs to System.out
+ * 
+ * @author Olle Thalén
+ *
+ */
 public class ConsoleLogger extends LoggerDAO {
 
 

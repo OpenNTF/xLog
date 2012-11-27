@@ -10,7 +10,14 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.impl.SimpleLog;
 import org.openntf.utils.DominoProvider;
 
-
+/**
+ * The log factory implementation. <br/>
+ * This class is responsible for creating logger objects, it also contains a LogBuffer instance which
+ * stores log data in thread-safe data structures.
+ * 
+ * @author Olle Thalén
+ *
+ */
 public class DominoFactory extends LogFactory implements ResourceHandler {
 
 	private Map<Class<?>, DominoLogger> loggers = Collections.synchronizedMap(new HashMap<Class<?>, DominoLogger>());
@@ -30,7 +37,6 @@ public class DominoFactory extends LogFactory implements ResourceHandler {
 
 	@Override
 	public String[] getAttributeNames() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -63,8 +69,6 @@ public class DominoFactory extends LogFactory implements ResourceHandler {
 
 	@Override
 	public void removeAttribute(String name) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

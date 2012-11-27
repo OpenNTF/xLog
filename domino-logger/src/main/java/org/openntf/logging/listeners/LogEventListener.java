@@ -14,6 +14,18 @@ import org.openntf.logging.scheduler.Scheduler;
 import org.openntf.utils.ApplicationScopeUtils;
 import org.openntf.utils.JSFUtils;
 
+/**
+ * This PhaseListener is central to the logging engine. <br/>
+ * After the response has been rendered, it checks if log messages has been added during the request. <br/>
+ * If log entries are available one of two things will happen: <br/><br/>
+ * 1. The application is configured to delegate logging to a background thread: <br/>
+ *    A eclipse job will be scheduled for execution which uses a ThreadSessionExecutor to clone the current <br/>
+ *    session, this job will create log entries using the configured log appenders. <br/>
+ * 2. Logging should be done directly by PhaseListener, the LoggerService is used for this purpose.
+ * 
+ * @author Olle Thalén
+ *
+ */
 public class LogEventListener implements PhaseListener {
 
 	/**
@@ -32,7 +44,7 @@ public class LogEventListener implements PhaseListener {
 				}
 				LogBuffer buf = (LogBuffer) fac.getAttribute("buffer");
 				/*
-				 * If there are log messages start a new thread in 5 seconds,
+				 * If there are log messages start a new thread with a delay as configured in the application,
 				 * only if the thread is not already running. If the thread is
 				 * running but the JobChangeListener hasn't been notified yet,
 				 * wait until the notification is complete, then attempt to

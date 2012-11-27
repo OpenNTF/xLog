@@ -7,7 +7,6 @@ import lotus.domino.Session;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.impl.SimpleLog;
-import org.openntf.domino.DAOFactory;
 import org.openntf.logging.config.SystemConfiguration;
 import org.openntf.logging.entity.LogEntry;
 
@@ -32,7 +31,15 @@ public abstract class LoggerDAO {
 		log.setLevel(SystemConfiguration.isDiagnostic() ? SimpleLog.LOG_LEVEL_ALL : SimpleLog.LOG_LEVEL_ERROR);
 		logger = log;
 	}
-	
+
+	/**
+	 * This method is the entry point for a log appender.
+	 * 
+	 * @param logEntries all log entries added during one request
+	 * @param userName the user who added the log entries
+	 * 
+	 * @author Olle Thalén
+	 */
 	public abstract void createLogDocument(List<LogEntry> logEntries, String userName);
 	
 	public void recycle() {
