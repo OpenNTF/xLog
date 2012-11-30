@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -50,6 +51,12 @@ public class InitializationListener implements ApplicationListener {
 							Boolean diag = Boolean.valueOf(props.get("config.diagnostic").toString());
 							SystemConfiguration.setDiagnositc(diag);
 						}
+						if (props.containsKey("appender.ignore")) {
+							String val = props.getProperty("appender.ignore");
+							String[] ignoreList = val.split(";");
+							SystemConfiguration.setIgnoreList(Arrays.asList(ignoreList));
+						}
+						
 					} else {
 						System.out.println("Couldn't find property file logging-appenders.properties");
 					}

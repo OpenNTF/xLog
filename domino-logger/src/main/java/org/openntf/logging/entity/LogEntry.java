@@ -46,4 +46,5 @@ public class LogEntry {
 	public void setStackTrace(String[] stackTrace) {
 		this.stackTrace = stackTrace;
 	}
+	
 }

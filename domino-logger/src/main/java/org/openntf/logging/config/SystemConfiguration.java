@@ -31,10 +31,30 @@ public class SystemConfiguration {
 		return systemInfo.getLogImplementations();
 	}
 
+	public static void setIgnoreList(List<String> list) {
+		synchronized(systemInfo) {
+			systemInfo.setIgnoreList(list);
+		}
+	}
+	
+	public static List<String> getIgnoreList() {
+		return systemInfo.getIgnoreList();
+	}
+	
 	private static final SystemInfo systemInfo = new SystemInfo();
 
 	private static class SystemInfo {
 		private List<String> logImplementations = new ArrayList<String>();
+		private List<String> ignoreList = new ArrayList<String>();
+		
+		public List<String> getIgnoreList() {
+			return ignoreList;
+		}
+
+		public void setIgnoreList(List<String> ignoreList) {
+			this.ignoreList = ignoreList;
+		}
+
 		private boolean diagnostic = false;
 		public boolean isDiagnostic() {
 			return diagnostic;

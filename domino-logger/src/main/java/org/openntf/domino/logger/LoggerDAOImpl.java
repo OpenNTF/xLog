@@ -101,7 +101,6 @@ public class LoggerDAOImpl extends LoggerDAO {
 			style.recycle();
 			body.recycle();
 			logDoc.recycle();
-			
 		} catch (NotesException e) {
 			throw new RuntimeException(e);
 		}

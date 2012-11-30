@@ -2,12 +2,14 @@ package org.openntf.logging;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogConfigurationException;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.impl.SimpleLog;
+import org.openntf.logging.config.SystemConfiguration;
 import org.openntf.utils.DominoProvider;
 
 /**
@@ -43,6 +45,16 @@ public class DominoFactory extends LogFactory implements ResourceHandler {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Log getInstance(Class clazz) throws LogConfigurationException {
+		List<String> ignoreList = SystemConfiguration.getIgnoreList();		
+		String packageName = clazz.getPackage().getName();
+		
+		for (String ignorePrefix : ignoreList) {
+			if (packageName.startsWith(ignorePrefix)) {
+				SimpleLog logger = new SimpleLog(clazz.getName());
+				logger.setLevel(SimpleLog.LOG_LEVEL_OFF);
+				return logger;
+			}
+		}
 		DominoLogger log = loggers.get(clazz);
 		if (log == null) {
 			log = new DominoLogger(provider, buffer);
