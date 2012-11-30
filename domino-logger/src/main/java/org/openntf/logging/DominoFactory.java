@@ -14,18 +14,19 @@ import org.openntf.utils.DominoProvider;
 
 /**
  * The log factory implementation. <br/>
- * This class is responsible for creating logger objects, it also contains a LogBuffer instance which
- * stores log data in thread-safe data structures.
+ * This class is responsible for creating logger objects, it also contains a
+ * LogBuffer instance which stores log data in thread-safe data structures.
  * 
  * @author Olle Thalén
- *
+ * 
  */
 public class DominoFactory extends LogFactory implements ResourceHandler {
 
-	private Map<Class<?>, DominoLogger> loggers = Collections.synchronizedMap(new HashMap<Class<?>, DominoLogger>());
+	private Map<Class<?>, DominoLogger> loggers = Collections
+			.synchronizedMap(new HashMap<Class<?>, DominoLogger>());
 	private LogBuffer buffer = new LogBuffer();
 	private DominoProvider provider = null;
-	
+
 	@Override
 	public Object getAttribute(String name) {
 		if (name.equals("buffer")) {
@@ -46,13 +47,16 @@ public class DominoFactory extends LogFactory implements ResourceHandler {
 	@Override
 	public Log getInstance(Class clazz) throws LogConfigurationException {
 		List<String> ignoreList = SystemConfiguration.getIgnoreList();		
-		String packageName = clazz.getPackage().getName();
-		
-		for (String ignorePrefix : ignoreList) {
-			if (packageName.startsWith(ignorePrefix)) {
-				SimpleLog logger = new SimpleLog(clazz.getName());
-				logger.setLevel(SimpleLog.LOG_LEVEL_OFF);
-				return logger;
+		if (clazz != null && clazz.getPackage() != null) {
+			
+			String packageName = clazz.getPackage().getName();
+
+			for (String ignorePrefix : ignoreList) {
+				if (packageName.startsWith(ignorePrefix)) {
+					SimpleLog logger = new SimpleLog(clazz.getName());
+					logger.setLevel(SimpleLog.LOG_LEVEL_OFF);
+					return logger;
+				}
 			}
 		}
 		DominoLogger log = loggers.get(clazz);
@@ -88,7 +92,7 @@ public class DominoFactory extends LogFactory implements ResourceHandler {
 		if (name.equals("provider")) {
 			this.provider = (DominoProvider) value;
 		}
-		
+
 	}
 
 	@Override
