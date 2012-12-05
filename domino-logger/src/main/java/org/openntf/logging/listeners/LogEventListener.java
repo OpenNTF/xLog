@@ -36,13 +36,14 @@ public class LogEventListener implements PhaseListener {
 	public void afterPhase(PhaseEvent event) {
 		try {
 			if (event.getPhaseId() == PhaseId.RENDER_RESPONSE) {
-				ApplicationScopeUtils.checkAndSet();
-
+				ApplicationScopeUtils.checkAndSet();			
+				
 				LogFactory fac = LogFactory.getFactory();
 				if (fac instanceof ResourceHandler) {
 					((ResourceHandler) fac).commit();
 				}
 				LogBuffer buf = (LogBuffer) fac.getAttribute("buffer");
+				
 				/*
 				 * If there are log messages start a new thread with a delay as configured in the application,
 				 * only if the thread is not already running. If the thread is

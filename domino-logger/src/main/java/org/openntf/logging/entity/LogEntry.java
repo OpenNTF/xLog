@@ -14,7 +14,16 @@ public class LogEntry {
 	private boolean error;
 	//if this entry is an error, stackTrace contains the throwables stack trace as a an array of Strings
 	private String[] stackTrace;
+	private String user;
 	
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
 	public String getLogEntry() {
 		return logEntry;
 	}
@@ -45,6 +54,11 @@ public class LogEntry {
 
 	public void setStackTrace(String[] stackTrace) {
 		this.stackTrace = stackTrace;
+	}
+	
+	@Override
+	public String toString() {
+		return user + ": " + logEntry;
 	}
 	
 }

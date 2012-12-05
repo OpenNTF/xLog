@@ -2,7 +2,9 @@ package org.openntf.utils;
 
 import java.util.List;
 
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 import lotus.domino.ACL;
 import lotus.domino.Database;
@@ -33,6 +35,14 @@ public class JSFUtils {
 	
 	public static Database getCurrentDatabase() {
 		return (Database) getVariable("database");
+	}
+	
+	public static String getSessionID() {
+		FacesContext ctx = FacesContext.getCurrentInstance();
+		ExternalContext exCon = ctx.getExternalContext();
+		HttpServletRequest request = (HttpServletRequest) exCon
+				.getRequest();
+		return request.getRequestedSessionId();
 	}
 	
 	public static String getRequestParameterValue(String parameter) {

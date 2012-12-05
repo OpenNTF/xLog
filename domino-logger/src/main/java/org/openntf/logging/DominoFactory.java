@@ -99,7 +99,7 @@ public class DominoFactory extends LogFactory implements ResourceHandler {
 	public void commit() {
 		buffer.saveLogDocument();
 		for (DominoLogger logger : loggers.values()) {
-			logger.newDocument();
+			logger.newDocument();			
 		}
 	}
 

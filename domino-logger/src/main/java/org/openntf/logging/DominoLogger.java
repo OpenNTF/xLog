@@ -24,6 +24,8 @@ import org.openntf.utils.DominoProvider;
 import org.openntf.utils.JSFUtils;
 import org.openntf.utils.UniqueThreadIdGenerator;
 
+import com.ibm.xsp.designer.context.ServletXSPContext;
+
 /**
  * Log implementation which creates log entries and sends them to its Observer.
  * 
@@ -52,6 +54,7 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 	
 	private void addLogEntry(Object message, LogLevel level, Throwable t) {
 		int id = UniqueThreadIdGenerator.getCurrentThreadId();
+		
 		logger.debug("transaction id used when adding a log message: " + id);
 		logger.debug("thread used when adding a log entry: " + Thread.currentThread().getId());
 		
@@ -70,6 +73,9 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 			}
 		}
 		LogEntry entry = new LogEntry();
+		ServletXSPContext xspContext = (ServletXSPContext) JSFUtils
+				.getVariable("context");
+		entry.setUser(xspContext.getUser().getDistinguishedName());
 		entry.setError(t != null);
 		
 		if (message == null) {
@@ -271,7 +277,8 @@ public class DominoLogger extends Observable implements Log, ApplicationScopeLis
 	 * the first call will be treated as a new log document.
 	 */
 	public void newDocument() {
-		flags.put(UniqueThreadIdGenerator.getCurrentThreadId(), true);
+		int id = UniqueThreadIdGenerator.getCurrentThreadId();
+		flags.put(id, true);
 	}
 
 	public Map<Integer, String> getEntryPoints() {

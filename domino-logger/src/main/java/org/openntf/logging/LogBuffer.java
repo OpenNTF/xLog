@@ -67,23 +67,23 @@ public class LogBuffer implements Observer {
 	 * lists will be available in the queue.
 	 */
 	public void saveLogDocument() {
-		String currentId = String.valueOf(UniqueThreadIdGenerator.getCurrentThreadId());
+		String currentId = String.valueOf(UniqueThreadIdGenerator.getCurrentThreadId());		
+		String fullName = null;
+		try {
+			ServletXSPContext xspContext = (ServletXSPContext) JSFUtils
+					.getVariable("context");
+			fullName = xspContext.getUser().getDistinguishedName();
+		} catch (NullPointerException e) {
+			fullName = "Test user";
+		}
+		
 		if (logEntries.containsKey(currentId)) {
-			try {
-				String fullName = null;
-				try {
-					ServletXSPContext xspContext = (ServletXSPContext) JSFUtils
-							.getVariable("context");
-					fullName = xspContext.getUser().getDistinguishedName();
-				} catch (NullPointerException e) {
-					fullName = "Test user";
-				}
-				
+			try {								
 				queue.put(fullName, logEntries.remove(currentId));
 			} catch (IllegalStateException e) {
 				logger.error("Failed to add log entries to queue, no log document will be created.");
 			}
-		}
+		} 
 	}
 
 	public Map<Integer, String> getClassNames() {
