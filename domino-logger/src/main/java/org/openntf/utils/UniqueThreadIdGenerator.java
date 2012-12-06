@@ -10,6 +10,11 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 public class UniqueThreadIdGenerator {
 
+	/**
+	 * This method returns a hash of the users distinguished name and the sessionId (if present)
+	 * 
+	 * @return hashcode which can be used as identifier
+	 */
     public static int getCurrentThreadId() {
         HashCodeBuilder builder = new HashCodeBuilder();
         builder.append(JSFUtils.getUsername());

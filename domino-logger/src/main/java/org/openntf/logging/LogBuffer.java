@@ -61,8 +61,7 @@ public class LogBuffer implements Observer {
 	}
 	
 	/**
-	 * Saves the current logentry list in the queue, using the thread-local variable to identify which list to
-	 * put in the queue. <br/>
+	 * Saves the current logentry list in the queue <br/>
 	 * The queue is a multimap so if the same user logs twice before the queue has been processed, both logentry
 	 * lists will be available in the queue.
 	 */
