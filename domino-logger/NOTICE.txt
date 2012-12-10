@@ -1,0 +1,15 @@
+OpenNTF xLog logging framework
+(C)Copyright 2012 Olle Thalén
+
+This product includes software contributed to
+OpenNTF Alliance (http://www.OpenNTF.org/)
+
+This product is licensed under the terms of the Apache 2.0 license.
+
+The project contains the following 3rd party code:
+
+1. The product contains JUnit, which is available from http://junit.sourceforge.net, and which is under the Common Public license - v1.0
+2. The product contains JMock, which is available from http://jmock.org/index.html, and which is under the jMock Project License
+3. The product contains Apache Commons, which is available from http://commons.apache.org, and which is under The Apache Software License, Version 2.0
+4. The product contains Hamcrest, which is available from http://code.google.com/p/hamcrest, and which is under Open Source Initiative OSI - The BSD 3-Clause License
+5. The product contains Google Guava, which is available from http://code.google.com/p/guava-libraries, and which is under The Apache Software License, Version 2.0

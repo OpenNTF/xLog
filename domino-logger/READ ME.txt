@@ -1,0 +1,48 @@
+What is xLog
+- A log engine which uses apache commons logging as a thin wrapper
+- Allows for dynamic configuration of log level, log appenders, asynchronous logging
+- Easy to use by just accessing log objects via the abstract LogFactory.
+
+Overview of log implementation
+- The class org.openntf.logging.DominoFactory creates logger objects of the type org.openntf.logging.DominoLogger. 
+  When logging methods are invoked the DominoLogger checks if the current log level allows for log entries to be created. 
+  If so, a log entry is created and sent to a LogBuffer instance via the Observer pattern. The LogBuffer class contains thread-safe data structures for storing log entries.
+  
+Parts of this project
+- A application log which contains the log documents
+- A test application which can be used to test the log framework
+- The log implementation as a separate java project, it is under version control on github:
+  https://github.com/OpenNTF/xLog/
+  
+Configuration
+- The log engine implementation contains an ApplicationListener, which reads from the file logging-appenders.properties. 
+  This file contains all appender implementations, an appender extends org.openntf.domino.logger.LoggerDAO and you can define several appenders if you want to.
+  The project includes an appender implementation for an application log, every log document contains all log entries during one request, 
+  instead of creating one log document for each log call. The log appender also supports logging of exceptions. See org.openntf.domino.logger.LoggerDAOImpl for details.
+  Each appender is defined as appender.A1, appender.A2 and so on. You can also add some debugging of the logging framework by adding the line config.diagnostic=true.
+  Some classes from the XPages runtime also uses apache commons logging, if you don't want those log message to be included you can define an ignore list, which contains
+  prefixes of package names which you wish to exclude from logging. Each value is separated with ";".
+  If no appender is found, logging defaults to System.out using the implementation org.openntf.domino.logger.ConsoleLogger.
+  Example configuration:
+  appender.A1=org.openntf.domino.logger.LoggerDAOImpl
+  appender.A2=org.openntf.domino.logger.ConsoleLogger
+  appender.ignore=com.sun;org.apache;javax.faces
+  config.diagnostic=true
+- The application loggerTest.nsf contains two xpages, one admin page and one test page.
+  Use the admin page to configure log level, replica ID of the application log. Asynchronous/synchronous logging.
+  
+Configuration of the java project
+- 1. How to configure the maven-based project
+     Checkout the project using this URL: https://github.com/OpenNTF/xLog
+     Since the project uses artifacts which are not available in the normal maven repositories, you need to add a user library (assuming you are using eclipse).
+	 Right-click on the project and choose properties, the java build path. Choose add library then user library, create a new user library and choose all jar files
+	 in the folder src/dep. The project might require a project clean after this step is done. If you don't have eclipse, download eclipse juno. It contains both maven and eGit by default.
+  2. The normal maven package target will not work with a user library, so setup a new maven run configuration where you choose skip tests. (Run as\Run configurations). 
+     You can still run the unit tests by choosing Run as\Junit test.
+	 
+Security configuration
+- This release comes only with a test application where the implementation classes has been added to WebContent\WEB-INF\lib.
+  Therefore you need to add the following line to java.policy (all domains):
+  permission java.security.AllPermission;
+
+If you have any questions or suggestions, please send me an email to ollejobb@gmail.com
