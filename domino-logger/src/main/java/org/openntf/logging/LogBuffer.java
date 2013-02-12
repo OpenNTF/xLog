@@ -8,10 +8,8 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.impl.SimpleLog;
-import org.openntf.logging.config.SystemConfiguration;
 import org.openntf.logging.entity.LogEntry;
+import org.openntf.utils.DiagnosticLogging;
 import org.openntf.utils.JSFUtils;
 import org.openntf.utils.UniqueThreadIdGenerator;
 
@@ -32,16 +30,12 @@ public class LogBuffer implements Observer {
 
 	private Map<String, List<LogEntry>> logEntries = Collections.synchronizedMap(new HashMap<String, List<LogEntry>>());
 	private Multimap<String, List<LogEntry>> queue;
-	private Map<Integer, String> classNames = Collections.synchronizedMap(new HashMap<Integer, String>());
-	private Log logger;
+	private Map<Integer, String> classNames = Collections.synchronizedMap(new HashMap<Integer, String>());	
 	
 	public LogBuffer() {
 		Multimap<String, List<LogEntry>> tmp = HashMultimap.create();
 		//use a synchronized multimap so we can buffer log entries from the same user if needed
-		this.queue = Multimaps.synchronizedMultimap(tmp);
-		SimpleLog log = new SimpleLog(LogBuffer.class.getName());
-		log.setLevel(SystemConfiguration.isDiagnostic() ? SimpleLog.LOG_LEVEL_ALL : SimpleLog.LOG_LEVEL_ERROR);
-		this.logger = log;
+		this.queue = Multimaps.synchronizedMultimap(tmp);		
 	}
 	
 	@Override
@@ -76,11 +70,15 @@ public class LogBuffer implements Observer {
 			fullName = "Test user";
 		}
 		
+		if (DiagnosticLogging.getLogger().isDebugEnabled()) {
+			DiagnosticLogging.getLogger().debug("currentID for this user: " + currentId);
+			DiagnosticLogging.getLogger().debug("all log entries: " + logEntries);
+		}
 		if (logEntries.containsKey(currentId)) {
 			try {								
 				queue.put(fullName, logEntries.remove(currentId));
 			} catch (IllegalStateException e) {
-				logger.error("Failed to add log entries to queue, no log document will be created.");
+				DiagnosticLogging.getLogger().error("Failed to add log entries to queue, no log document will be created.");
 			}
 		} 
 	}

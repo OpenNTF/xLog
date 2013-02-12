@@ -13,10 +13,10 @@ import lotus.domino.View;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.impl.SimpleLog;
 import org.openntf.domino.logger.ConsoleLogger;
 import org.openntf.domino.logger.LoggerDAO;
 import org.openntf.logging.config.SystemConfiguration;
+import org.openntf.utils.DiagnosticLogging;
 
 /**
  * Factory class used to get all dao instances when log appenders are to be invoked.
@@ -28,15 +28,11 @@ public class DAOFactory {
 
 	private Session session;
 	private Database dbLogger;
-	private String dbPath;
-	private Log logger;
+	private String dbPath;	
 	
 	public DAOFactory(Session session, String dbPath) {
 		this.session = session;
-		this.dbPath = dbPath;
-		SimpleLog log = new SimpleLog(DAOFactory.class.getName());
-		log.setLevel(SystemConfiguration.isDiagnostic() ? SimpleLog.LOG_LEVEL_ALL : SimpleLog.LOG_LEVEL_ERROR);
-		this.logger = log;
+		this.dbPath = dbPath;		
 	}
 
 	public void recycle() {
@@ -70,6 +66,8 @@ public class DAOFactory {
 					.getDbDirectory(logServer);
 			Database dbLog = directory.openDatabaseByReplicaID(replicaId);
 			this.dbLogger = dbLog;
+			
+			Log logger = DiagnosticLogging.getLogger();
 			
 			logger.debug("db path: " + dbLog.getFilePath());
 			if (!dbLog.isOpen()) {

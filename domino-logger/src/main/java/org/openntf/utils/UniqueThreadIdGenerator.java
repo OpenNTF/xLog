@@ -1,6 +1,7 @@
 package org.openntf.utils;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.logging.Log;
 
 /**
  * Generator class used to get a transaction ID.
@@ -19,8 +20,12 @@ public class UniqueThreadIdGenerator {
         HashCodeBuilder builder = new HashCodeBuilder();
         builder.append(JSFUtils.getUsername());
         String sessionId = JSFUtils.getSessionID();
-        if (sessionId != null) {
+        if (sessionId != null) {        	
         	builder.append(sessionId);
+        }
+        Log logger = DiagnosticLogging.getLogger();
+        if (logger.isDebugEnabled()) {
+        	logger.debug("values used when creating hash: username - " + JSFUtils.getUsername() + ", sessionID - " + sessionId);        	
         }
         return builder.hashCode();
     }

@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogConfigurationException;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.impl.SimpleLog;
 import org.openntf.logging.config.SystemConfiguration;
+import org.openntf.utils.DiagnosticLogging;
 import org.openntf.utils.DominoProvider;
 
 /**
@@ -25,8 +26,8 @@ public class DominoFactory extends LogFactory implements ResourceHandler {
 	private Map<Class<?>, DominoLogger> loggers = Collections
 			.synchronizedMap(new HashMap<Class<?>, DominoLogger>());
 	private LogBuffer buffer = new LogBuffer();
-	private DominoProvider provider = null;
-
+	private DominoProvider provider = null;	
+	
 	@Override
 	public Object getAttribute(String name) {
 		if (name.equals("buffer")) {
@@ -46,7 +47,8 @@ public class DominoFactory extends LogFactory implements ResourceHandler {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Log getInstance(Class clazz) throws LogConfigurationException {
-		List<String> ignoreList = SystemConfiguration.getIgnoreList();		
+		List<String> ignoreList = SystemConfiguration.getIgnoreList();
+		DiagnosticLogging.getLogger().debug("ignore list in DominoFactory: " + ignoreList);
 		if (clazz != null && clazz.getPackage() != null) {
 			
 			String packageName = clazz.getPackage().getName();

@@ -12,6 +12,7 @@ import org.openntf.logging.LoggerService;
 import org.openntf.logging.ResourceHandler;
 import org.openntf.logging.scheduler.Scheduler;
 import org.openntf.utils.ApplicationScopeUtils;
+import org.openntf.utils.DiagnosticLogging;
 import org.openntf.utils.JSFUtils;
 
 /**
@@ -26,8 +27,8 @@ import org.openntf.utils.JSFUtils;
  * @author Olle Thalén
  *
  */
-public class LogEventListener implements PhaseListener {
-
+public class LogEventListener implements PhaseListener {	
+		
 	/**
 	 * 
 	 */
@@ -36,6 +37,7 @@ public class LogEventListener implements PhaseListener {
 	public void afterPhase(PhaseEvent event) {
 		try {
 			if (event.getPhaseId() == PhaseId.RENDER_RESPONSE) {
+				DiagnosticLogging.getLogger().debug("running after phase render response");
 				ApplicationScopeUtils.checkAndSet();			
 				
 				LogFactory fac = LogFactory.getFactory();
@@ -51,6 +53,11 @@ public class LogEventListener implements PhaseListener {
 				 * wait until the notification is complete, then attempt to
 				 * start the job again.
 				 */
+				if (DiagnosticLogging.getLogger().isDebugEnabled()) {
+					if (buf != null) {
+						DiagnosticLogging.getLogger().debug("number of entries in log buffer: " + buf.getQueue().size());
+					}
+				}
 				if (buf != null && !buf.getQueue().isEmpty()) {
 					Map<?, ?> applicationScope = (Map<?, ?>) JSFUtils
 							.getVariable("applicationScope");

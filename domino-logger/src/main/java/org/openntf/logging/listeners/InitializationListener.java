@@ -9,6 +9,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import org.openntf.logging.config.SystemConfiguration;
+import org.openntf.utils.DiagnosticLogging;
 
 import com.ibm.xsp.application.ApplicationEx;
 import com.ibm.xsp.application.events.ApplicationListener;
@@ -46,10 +47,10 @@ public class InitializationListener implements ApplicationListener {
 							appenderName = appenderName.substring(0, appenderName.length()-1) + i;
 						}
 						
-						SystemConfiguration.setImplementations(classNames);
+						SystemConfiguration.setImplementations(classNames);						
 						if (props.containsKey("config.diagnostic")) {
 							Boolean diag = Boolean.valueOf(props.get("config.diagnostic").toString());
-							SystemConfiguration.setDiagnositc(diag);
+							DiagnosticLogging.initLogger(diag);
 						}
 						if (props.containsKey("appender.ignore")) {
 							String val = props.getProperty("appender.ignore");
